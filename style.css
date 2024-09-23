@@ -1,0 +1,48 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  overflow: hidden;
+}
+
+.webgl {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  outline: none;
+  z-index: 8;    /* position this canvas at bottom of the other one */
+
+}
+
+#container {
+  position: absolute;
+}
+
+#overlay {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  padding: 15px;
+  z-index: 10;      /* position this canvas on top of the other one */
+
+}
+
+#photo {
+  position: relative;
+  padding: 15px;
+  z-index: 10;      /* position this canvas on top of the other one */
+
+}
+
+#uploadedPhoto {
+  width: 150px;
+}
+
+@media only screen and (max-width:480px) { 
+
+}

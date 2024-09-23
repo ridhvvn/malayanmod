@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>TMS7</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+<link rel="stylesheet" href="./style.css">
+
+</head>
+<body>
+
+<div id="container">
+ 
+  <div> 
+    <canvas class="webgl"></canvas> 
+  </div>
+
+</div>
+  
+<div id="overlay">
+  <input type="file" id="photoInput" accept="image/*" required><br>
+  <a href="https://drive.google.com/drive/folders/1NC2Q2W9HxicnZOm2fgmFIUC9JLKRiYUL?usp=drive_link">Template di sini</a>
+
+</div>
+
+<div id="photoContainer">
+  <img id="uploadedPhoto">
+
+</div>
+
+
+
+<!-- partial -->
+<script src='https://cdnjs.cloudflare.com/ajax/libs/three.js/r125/three.min.js'></script>
+<script src='https://unpkg.com/three@0.125.2/examples/js/controls/OrbitControls.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js'></script>
+<script src='https://unpkg.com/three@0.125.2/examples/js/loaders/GLTFLoader.js'></script><script  src="./script.js"></script>
+
+
+</body>
+</html>

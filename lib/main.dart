@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'config/supabase_config.dart';
-import 'theme/app_theme.dart';
+import 'theme/util.dart';
+import 'theme/theme.dart';
 import 'pages/home_page.dart';
 
 void main() async {
@@ -14,10 +15,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = View.of(context).platformDispatcher.platformBrightness;
+
+    // Use Google Fonts (Inter) via the theme utility
+    TextTheme textTheme = createTextTheme(context, "Inter", "Inter");
+
+    MaterialTheme theme = MaterialTheme(textTheme);
     return MaterialApp(
-      title: 'Supabase + Flutter',
+      title: 'Malayanmods',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.darkTheme,
+      theme: brightness == Brightness.light ? theme.light() : theme.dark(),
       home: const HomePage(),
     );
   }

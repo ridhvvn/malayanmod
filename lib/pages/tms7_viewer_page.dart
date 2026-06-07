@@ -7,7 +7,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:web/web.dart' as web;
 
 import '../services/threejs_bridge.dart';
-import '../theme/app_theme.dart';
 
 /// Full-screen TMS7 3D model viewer page.
 ///
@@ -30,6 +29,7 @@ class _Tms7ViewerPageState extends State<Tms7ViewerPage>
   bool _panelExpanded = true;
   late final AnimationController _panelAnimController;
   late final Animation<double> _panelSlide;
+  Timer? _initTimer;
 
   @override
   void initState() {
@@ -62,7 +62,7 @@ class _Tms7ViewerPageState extends State<Tms7ViewerPage>
     }
 
     // Give the DOM element time to mount, then init the scene
-    Timer(const Duration(milliseconds: 300), () {
+    _initTimer = Timer(const Duration(milliseconds: 300), () {
       ThreeJsBridge.initScene(_containerId);
       if (mounted) setState(() => _sceneReady = true);
     });
@@ -70,7 +70,9 @@ class _Tms7ViewerPageState extends State<Tms7ViewerPage>
 
   @override
   void dispose() {
+    _initTimer?.cancel();
     _panelAnimController.dispose();
+    ThreeJsBridge.disposeScene();
     super.dispose();
   }
 
@@ -90,8 +92,7 @@ class _Tms7ViewerPageState extends State<Tms7ViewerPage>
   /// Opens a native file picker via an HTML input element and sends
   /// the selected image to the Three.js scene as a data URL.
   void _pickLiveryImage() {
-    final input =
-        web.document.createElement('input') as web.HTMLInputElement;
+    final input = web.document.createElement('input') as web.HTMLInputElement;
     input.type = 'file';
     input.accept = 'image/*';
 
@@ -136,21 +137,21 @@ class _Tms7ViewerPageState extends State<Tms7ViewerPage>
   @override
   Widget build(BuildContext context) {
     final isMobile = MediaQuery.of(context).size.width < 600;
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
-      backgroundColor: AppTheme.background,
+      backgroundColor: colorScheme.surface,
       body: Stack(
         children: [
           // ── Three.js Canvas ──────────────────────────────────────
-          const Positioned.fill(
-            child: HtmlElementView(viewType: _viewType),
-          ),
+          const Positioned.fill(child: HtmlElementView(viewType: _viewType)),
 
           // ── Loading indicator ───────────────────────────────────
           if (!_sceneReady)
             Positioned.fill(
               child: Container(
-                color: AppTheme.background,
+                color: colorScheme.surface,
                 child: Center(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -160,15 +161,15 @@ class _Tms7ViewerPageState extends State<Tms7ViewerPage>
                         height: 48,
                         child: CircularProgressIndicator(
                           strokeWidth: 3,
-                          color: AppTheme.primary,
+                          color: colorScheme.primary,
                         ),
                       ),
                       const SizedBox(height: 20),
                       Text(
                         'Loading 3D Model…',
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              color: AppTheme.textSecondary,
-                            ),
+                        style: textTheme.bodyLarge?.copyWith(
+                          color: colorScheme.onSurfaceVariant,
+                        ),
                       ),
                     ],
                   ),
@@ -194,6 +195,8 @@ class _Tms7ViewerPageState extends State<Tms7ViewerPage>
   }
 
   Widget _buildOverlayPanel(BuildContext context, bool isMobile) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Positioned(
       left: isMobile ? 16 : 24,
       right: isMobile ? 16 : null,
@@ -205,10 +208,10 @@ class _Tms7ViewerPageState extends State<Tms7ViewerPage>
         child: Container(
           constraints: const BoxConstraints(maxWidth: 380),
           decoration: BoxDecoration(
-            color: AppTheme.surface.withValues(alpha: 0.65),
+            color: colorScheme.surface.withValues(alpha: 0.65),
             borderRadius: BorderRadius.circular(28),
             border: Border.all(
-              color: AppTheme.primary.withValues(alpha: 0.15),
+              color: colorScheme.primary.withValues(alpha: 0.15),
             ),
             boxShadow: [
               BoxShadow(
@@ -228,6 +231,9 @@ class _Tms7ViewerPageState extends State<Tms7ViewerPage>
   }
 
   Widget _buildPanelContent(BuildContext context, bool isMobile) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
     return Padding(
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -239,14 +245,17 @@ class _Tms7ViewerPageState extends State<Tms7ViewerPage>
             children: [
               Expanded(
                 child: ShaderMask(
-                  shaderCallback: (bounds) =>
-                      AppTheme.primaryGradient.createShader(bounds),
+                  shaderCallback: (bounds) => LinearGradient(
+                    colors: [colorScheme.primary, colorScheme.tertiary],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ).createShader(bounds),
                   child: Text(
                     'Test Livery',
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          fontWeight: FontWeight.w800,
-                          color: Colors.white,
-                        ),
+                    style: textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
@@ -265,10 +274,10 @@ class _Tms7ViewerPageState extends State<Tms7ViewerPage>
           // ── Description ───────────────────────────────────────
           Text(
             'Select an image to customize your TMS7 experience.\nAny image files are accepted.',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppTheme.textSecondary,
-                  height: 1.5,
-                ),
+            style: textTheme.bodyMedium?.copyWith(
+              color: colorScheme.onSurfaceVariant,
+              height: 1.5,
+            ),
           ),
           const SizedBox(height: 24),
 
@@ -320,6 +329,8 @@ class _GlassIconButtonState extends State<_GlassIconButton> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return MouseRegion(
       onEnter: (_) => setState(() => _hovered = true),
       onExit: (_) => setState(() => _hovered = false),
@@ -331,18 +342,18 @@ class _GlassIconButtonState extends State<_GlassIconButton> {
           height: widget.size,
           decoration: BoxDecoration(
             color: _hovered
-                ? AppTheme.surfaceLight.withValues(alpha: 0.9)
-                : AppTheme.surface.withValues(alpha: 0.55),
+                ? colorScheme.surfaceContainerHigh.withValues(alpha: 0.9)
+                : colorScheme.surface.withValues(alpha: 0.55),
             borderRadius: BorderRadius.circular(widget.size / 2),
             border: Border.all(
               color: _hovered
-                  ? AppTheme.primary.withValues(alpha: 0.4)
+                  ? colorScheme.primary.withValues(alpha: 0.4)
                   : Colors.white.withValues(alpha: 0.1),
             ),
           ),
           child: Icon(
             widget.icon,
-            color: AppTheme.textPrimary,
+            color: colorScheme.onSurface,
             size: widget.size * 0.5,
           ),
         ),
@@ -373,6 +384,8 @@ class _GradientButtonState extends State<_GradientButton> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return GestureDetector(
       onTapDown: (_) => setState(() => _pressed = true),
       onTapUp: (_) {
@@ -386,11 +399,15 @@ class _GradientButtonState extends State<_GradientButton> {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           decoration: BoxDecoration(
-            gradient: AppTheme.primaryGradient,
+            gradient: LinearGradient(
+              colors: [colorScheme.primary, colorScheme.tertiary],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
             borderRadius: BorderRadius.circular(14),
             boxShadow: [
               BoxShadow(
-                color: AppTheme.primary.withValues(alpha: 0.35),
+                color: colorScheme.primary.withValues(alpha: 0.35),
                 blurRadius: 12,
                 offset: const Offset(0, 4),
               ),
@@ -400,15 +417,15 @@ class _GradientButtonState extends State<_GradientButton> {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(widget.icon, color: Colors.white, size: 18),
+              Icon(widget.icon, color: colorScheme.onPrimary, size: 18),
               const SizedBox(width: 8),
               Flexible(
                 child: Text(
                   widget.label,
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                      ),
+                    color: colorScheme.onPrimary,
+                    fontWeight: FontWeight.w600,
+                  ),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
@@ -442,6 +459,8 @@ class _OutlineButtonState extends State<_OutlineButton> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return MouseRegion(
       onEnter: (_) => setState(() => _hovered = true),
       onExit: (_) => setState(() => _hovered = false),
@@ -452,13 +471,13 @@ class _OutlineButtonState extends State<_OutlineButton> {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           decoration: BoxDecoration(
             color: _hovered
-                ? AppTheme.surfaceLight.withValues(alpha: 0.7)
+                ? colorScheme.surfaceContainerHigh.withValues(alpha: 0.7)
                 : Colors.transparent,
             borderRadius: BorderRadius.circular(14),
             border: Border.all(
               color: _hovered
-                  ? AppTheme.accent.withValues(alpha: 0.6)
-                  : AppTheme.textSecondary.withValues(alpha: 0.3),
+                  ? colorScheme.tertiary.withValues(alpha: 0.6)
+                  : colorScheme.onSurfaceVariant.withValues(alpha: 0.3),
               width: 1.5,
             ),
           ),
@@ -468,7 +487,9 @@ class _OutlineButtonState extends State<_OutlineButton> {
             children: [
               Icon(
                 widget.icon,
-                color: _hovered ? AppTheme.accent : AppTheme.textSecondary,
+                color: _hovered
+                    ? colorScheme.tertiary
+                    : colorScheme.onSurfaceVariant,
                 size: 18,
               ),
               const SizedBox(width: 8),
@@ -476,11 +497,11 @@ class _OutlineButtonState extends State<_OutlineButton> {
                 child: Text(
                   widget.label,
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                        color: _hovered
-                            ? AppTheme.accent
-                            : AppTheme.textSecondary,
-                        fontWeight: FontWeight.w600,
-                      ),
+                    color: _hovered
+                        ? colorScheme.tertiary
+                        : colorScheme.onSurfaceVariant,
+                    fontWeight: FontWeight.w600,
+                  ),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),

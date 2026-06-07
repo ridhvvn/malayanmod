@@ -11,6 +11,9 @@ external void _initTms7Scene(JSString containerId);
 @JS('updateLiveryTexture')
 external void _updateLiveryTexture(JSString dataUrl);
 
+@JS('disposeTms7Scene')
+external void _disposeTms7Scene();
+
 /// Dart-friendly wrapper around the Three.js interop functions.
 class ThreeJsBridge {
   ThreeJsBridge._();
@@ -25,5 +28,10 @@ class ThreeJsBridge {
   /// [dataUrl] should be a base64 data URL (e.g. from FileReader.readAsDataURL).
   static void updateLiveryTexture(String dataUrl) {
     _updateLiveryTexture(dataUrl.toJS);
+  }
+
+  /// Dispose of the Three.js scene and release resources.
+  static void disposeScene() {
+    _disposeTms7Scene();
   }
 }

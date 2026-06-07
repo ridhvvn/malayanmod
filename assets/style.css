@@ -1,0 +1,122 @@
+/* Material 3 Primary Color */
+:root {
+  --md-sys-color-primary: #494D52;
+  --md-sys-color-on-primary: #fff;
+  --md-sys-color-secondary: #919092;
+  --md-sys-color-on-secondary: #fff;
+  --md-sys-color-tertiary: #938F93;
+  --md-sys-color-on-tertiary: #fff;
+  --md-sys-color-error: #FF5449;
+  --md-sys-color-on-error: #fff;
+}
+
+.button-row {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: center;
+}
+
+.button-row>* {
+  flex-shrink: 0;
+  min-width: 64px;
+}
+
+html,
+body {
+  overflow: hidden;
+}
+
+.webgl {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  outline: none;
+  z-index: 8;
+  /* position this canvas at bottom of the other one */
+
+}
+
+#container {
+  position: absolute;
+}
+
+
+#overlay {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  width: auto;
+  height: auto;
+  z-index: 10;
+  display: block;
+  pointer-events: auto;
+}
+
+.overlay-content {
+  background: rgba(73, 77, 82, 0.5);
+  /* 50% transparent primary color */
+  border-radius: 40px;
+  padding: 20px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  color: var(--md-sys-color-on-primary, #fff);
+}
+
+.overlay-title {
+  font-family: 'Roboto', Arial, sans-serif;
+  font-size: 4rem;
+  font-weight: 900;
+  margin: 0px;
+  color: var(--md-sys-color-on-primary, #fff);
+}
+
+.overlay-desc {
+  font-family: 'Roboto', Arial, sans-serif;
+  font-size: 1rem;
+  color: var(--md-sys-color-on-primary, #fff);
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+
+#photo {
+  position: relative;
+  padding: 15px;
+  z-index: 10;
+  /* position this canvas on top of the other one */
+
+}
+
+#uploadedPhoto {
+  width: 150px;
+}
+
+#collapseBtn {
+    display: none;
+}
+
+@media only screen and (max-width:480px) {
+  #overlay {
+    top: auto;
+    bottom: 24px;
+    left: 24px;
+    right: 24px;
+    width: auto;
+  }
+  #collapseBtn {
+    display: block !important; /* Ensure it displays on mobile */
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 11;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+  }
+}

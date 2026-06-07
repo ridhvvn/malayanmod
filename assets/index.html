@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>TMS7</title>
+    <link rel="icon" type="image/png" href="./favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Round">
+
+    <!-- Material 3 Web Components -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <script type="importmap">
+    {
+      "imports": {
+        "@material/web/": "https://esm.run/@material/web/"
+      }
+    }
+  </script>
+    <script type="module">
+        import '@material/web/all.js';
+        import { styles as typescaleStyles } from '@material/web/typography/md-typescale-styles.js';
+        document.adoptedStyleSheets.push(typescaleStyles.styleSheet);
+    </script>
+
+</head>
+
+
+<body>
+
+    <div id="container">
+
+        <div>
+            <canvas class="webgl"></canvas>
+        </div>
+
+    </div>
+
+    <div id="overlay">
+        <div class="overlay-content">
+            <button id="collapseBtn">
+                <span class="material-icons-round">expand_less</span>
+            </button>
+            <p class="overlay-title">Test Livery</p>
+            <p class="overlay-desc">Select an image to customize your TMS7 experience.<br> Any image files are accepted.
+            </p>
+            <div class="button-row">
+                <md-filled-button id="uploadBtn" type="button">
+                    <span class="material-icons-round" style="vertical-align:middle;">upload</span>
+                    Select Livery
+                </md-filled-button>
+                <input type="file" id="photoInput" accept="image/*" required style="display:none;">
+                <md-filled-button id="templateBtn" type="button">
+                    Template
+                </md-filled-button>
+
+            </div>
+        </div>
+    </div>
+    <md-icon-button id="collapse" type="button">
+        <span class="material-icons-round">
+            keyboard_arrow_down
+        </span>
+    </md-icon-button>
+
+
+    <div id="photoContainer">
+        <img id="uploadedPhoto">
+    </div>
+
+
+
+    <!-- partial -->
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/three.js/r125/three.min.js'></script>
+    <script src='https://unpkg.com/three@0.125.2/examples/js/controls/OrbitControls.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js'></script>
+    <script src='https://unpkg.com/three@0.125.2/examples/js/loaders/GLTFLoader.js'></script>
+    <script src="./script.js"></script>
+
+</body>
+
+</html>

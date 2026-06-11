@@ -1,11 +1,11 @@
 {
-    "name": "supabase_flutter_app",
-    "short_name": "supabase_flutter_app",
+    "name": "Malayanmods",
+    "short_name": "Malayanmods",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Malayanmods",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

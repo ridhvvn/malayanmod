@@ -36,7 +36,7 @@ jobs:
           echo "SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}" >> .env
 
       - name: Build Flutter Web
-        run: flutter build web --release --base-href "/${{ github.event.repository.name }}/"
+        run: flutter build web --release --base-href "/"
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
